@@ -1,0 +1,46 @@
++----------------+
+|    Image       |
++----------------+
+| - name: str    |
+| - metadata: str|
+| - content: str |
++----------------+
+| +getName()     |
+| +getMetadata() |
+| +getContent()  |
+| +setters...    |
++----------------+
+
+        ▲
+        |
+        | uses
+        |
++--------------------+
+|   ImageEditor      |
++--------------------+
+| - image: Image     |
+| - storage: Storage |
++--------------------+
+| +clickImage()      |
+| +edit(...strategies)|
+| +saveImage()       |
++--------------------+
+
++-------------------------+       +-----------------------+
+|    ImageManipulator     |       |     ColorApplier      |
++-------------------------+       +-----------------------+
+| +manipulate(img): void  |       | +apply(img, c): void  |
++-------------------------+       +-----------------------+
+
+  ▲               ▲               ▲
+  |               |               |
+Crop           Sharpen         RedColor / SepiaColor ...
+
++----------------------+
+|     ImageStorage     |
++----------------------+
+| +save(img): Promise  |
++----------------------+
+
+      ▲
+   SQLStorage
