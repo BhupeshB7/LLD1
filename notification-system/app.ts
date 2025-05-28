@@ -85,7 +85,7 @@ NotificationFactory.register("push", PushNotificationStrategy);
 NotificationFactory.register("whatsapp", WhatsAppStrategy);
 
 
-// Example usage:
+//   
 const user = new User("Bhupesh", "bhupesh@example.com", "+1234567890", [
     "email",
     "sms",
