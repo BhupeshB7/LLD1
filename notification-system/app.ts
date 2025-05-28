@@ -44,21 +44,21 @@ class WhatsAppStrategy implements NotificationStrategy {
 }
 
 class NotificationFactory {
-    create(type: string): NotificationStrategy {
-        switch (type.toLocaleLowerCase()) {
-            case "email":
-                return new EmailStrategy();
-            case "sms":
-                return new SMSStrategy();
-            case "push":
-                return new PushNotificationStrategy();
-            case "whatsapp":
-                return new WhatsAppStrategy();
-            default:
-                throw new Error(`Unknown notification type : ${type}`)
+    private static strategies: { [key: string]: new () => NotificationStrategy } = {};
+
+    static register(type: string, strategy: new () => NotificationStrategy) {
+        NotificationFactory.strategies[type.toLowerCase()] = strategy;
+    }
+
+    static create(type: string): NotificationStrategy {
+        const StrategyClass = NotificationFactory.strategies[type.toLowerCase()];
+        if (!StrategyClass) {
+            throw new Error(`Unknown notification type: ${type}`);
         }
+        return new StrategyClass();
     }
 }
+
 
 class NotificationSender {
     private factory = new NotificationFactory();
@@ -71,7 +71,7 @@ class NotificationSender {
 
         preferences.forEach((type) => {
             try {
-                const strategies = this.factory.create(type);
+                const strategies = NotificationFactory.create(type);
                 strategies.send(user, msg);
             } catch (err) {
                 console.error(err)
@@ -79,6 +79,11 @@ class NotificationSender {
         })
     }
 }
+NotificationFactory.register("email", EmailStrategy);
+NotificationFactory.register("sms", SMSStrategy);
+NotificationFactory.register("push", PushNotificationStrategy);
+NotificationFactory.register("whatsapp", WhatsAppStrategy);
+
 
 // Example usage:
 const user = new User("Bhupesh", "bhupesh@example.com", "+1234567890", [
